@@ -38,6 +38,11 @@ def get_enderecos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Endereco).offset(skip).limit(limit).all()
 
 
+def get_address_by_id(db: Session, id: int):
+
+    return db.query(models.Endereco).filter(models.Endereco.id == id).first()
+
+
 def create_user_endereco(db: Session, endereco: schemas.EnderecoCreate, user_id: int):
     db_endereco = models.Endereco(**endereco.dict(), owner_id=user_id)
     db.add(db_endereco)

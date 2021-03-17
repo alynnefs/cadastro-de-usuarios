@@ -50,6 +50,11 @@ def create_endereco_for_user(
 ):
     return crud.create_user_endereco(db=db, endereco=endereco, user_id=user_id)
 
+@app.get("/users/{user_id}/enderecos/", response_model=schemas.Endereco)
+def read_address_by_id(
+    user_id: int, db: Session = Depends(get_db)
+):
+    return crud.get_endereco_by_id(db=db, id=user_id)
 
 @app.get("/enderecos/", response_model=List[schemas.Endereco])
 def read_enderecos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
