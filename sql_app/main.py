@@ -61,3 +61,8 @@ def read_address_by_id(
 def read_enderecos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     enderecos = crud.get_enderecos(db, skip=skip, limit=limit)
     return enderecos
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+
+    return crud.delete_user(db=db, user_id=user_id)

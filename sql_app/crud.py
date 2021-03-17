@@ -39,7 +39,7 @@ def get_enderecos(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_address_by_id(db: Session, id: int):
-    
+
     return db.query(models.Endereco).filter(models.Endereco.owner_id == id).all()
 
 
@@ -49,3 +49,20 @@ def create_user_endereco(db: Session, endereco: schemas.EnderecoCreate, user_id:
     db.commit()
     db.refresh(db_endereco)
     return db_endereco
+
+
+def delete_all_addresses(db: Session, user_id:int):
+    addresses = db.query(models.Endereco).filter(models.Endereco.owner_id == user_id).all()
+    for address in addresses:
+        db.delete(address)
+        db.commit()
+    return addresses
+
+
+def delete_user(db: Session, user_id:int):
+    delete_all_addresses(db=db, user_id=user_id)
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    db.delete(db_user)
+    db.commit()
+
+    return db_user
