@@ -39,8 +39,8 @@ def get_enderecos(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_address_by_id(db: Session, id: int):
-
-    return db.query(models.Endereco).filter(models.Endereco.id == id).first()
+    
+    return db.query(models.Endereco).filter(models.Endereco.owner_id == id).all()
 
 
 def create_user_endereco(db: Session, endereco: schemas.EnderecoCreate, user_id: int):
