@@ -12,30 +12,30 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    nome = Column(String)
+    name = Column(String)
     cpf = Column(String(11))
     pis = Column(String(11))
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
 
-    enderecos = relationship("Endereco", back_populates="owner")
+    addresses = relationship("Address", back_populates="owner")
 
 
 
-class Endereco(Base):
+class Address(Base):
 
-    __tablename__ = "enderecos"
+    __tablename__ = "addresses"
 
 
     id = Column(Integer, primary_key=True, index=True)
-    pais = Column(String)
-    estado = Column(String)
-    municipio = Column(String)
-    cep = Column(String(8))
-    rua = Column(String)
-    numero = Column(Integer)
-    complemento = Column(String)
+    country = Column(String)
+    state = Column(String)
+    city = Column(String)
+    zip_code = Column(String(8))
+    street = Column(String)
+    number = Column(Integer)
+    complement = Column(String)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="enderecos")
+    owner = relationship("User", back_populates="addresses")

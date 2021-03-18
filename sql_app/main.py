@@ -44,31 +44,29 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/users/{user_id}/enderecos/", response_model=schemas.Endereco)
-def create_endereco_for_user(
-    user_id: int, endereco: schemas.EnderecoCreate, db: Session = Depends(get_db)
+@app.post("/users/{user_id}/addresses/", response_model=schemas.Address)
+def create_address_for_user(
+    user_id: int, address: schemas.AddressCreate, db: Session = Depends(get_db)
 ):
-    return crud.create_user_endereco(db=db, endereco=endereco, user_id=user_id)
+    return crud.create_user_address(db=db, address=address, user_id=user_id)
 
-@app.get("/users/{user_id}/enderecos/")
+@app.get("/users/{user_id}/addresses/")
 def read_address_by_id(
     user_id: int, db: Session = Depends(get_db)
 ):
-
     return crud.get_address_by_id(db=db, id=user_id)
 
-@app.get("/enderecos/", response_model=List[schemas.Endereco])
-def read_enderecos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    enderecos = crud.get_enderecos(db, skip=skip, limit=limit)
-    return enderecos
+@app.get("/addresses/", response_model=List[schemas.Address])
+def read_addresses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.get_addresses(db, skip=skip, limit=limit)
 
 @app.delete("/users/{user_id}/")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     return crud.delete_user(db=db, user_id=user_id)
 
-@app.put("/users/{user_id}/enderecos/{address_id}", response_model=schemas.Endereco)
-def update_endereco(
-    user_id: int, address_id: int, endereco: schemas.EnderecoCreate, db: Session = Depends(get_db)
+@app.put("/users/{user_id}/addresses/{address_id}", response_model=schemas.Address)
+def update_address(
+    user_id: int, address_id: int, address: schemas.AddressCreate, db: Session = Depends(get_db)
 ):
-    return crud.update_endereco(db=db, endereco=endereco, owner_id=user_id, address_id=address_id)
+    return crud.update_address(db=db, address=address, owner_id=user_id, address_id=address_id)

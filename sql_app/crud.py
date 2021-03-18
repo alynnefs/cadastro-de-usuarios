@@ -19,10 +19,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: schemas.UserCreate):
+    # TODO: hash password
     fake_hashed_password = user.password + "notreallyhashed"
     db_user = models.User(
         email=user.email,
-        nome=user.nome,
+        name=user.name,
         cpf=user.cpf,
         pis=user.pis,
         hashed_password=fake_hashed_password
@@ -33,26 +34,26 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_enderecos(db: Session, skip: int = 0, limit: int = 100):
+def get_addresses(db: Session, skip: int = 0, limit: int = 100):
 
-    return db.query(models.Endereco).offset(skip).limit(limit).all()
+    return db.query(models.Address).offset(skip).limit(limit).all()
 
 
 def get_address_by_id(db: Session, id: int):
 
-    return db.query(models.Endereco).filter(models.Endereco.owner_id == id).all()
+    return db.query(models.Address).filter(models.Address.owner_id == id).all()
 
 
-def create_user_endereco(db: Session, endereco: schemas.EnderecoCreate, user_id: int):
-    db_endereco = models.Endereco(**endereco.dict(), owner_id=user_id)
-    db.add(db_endereco)
+def create_user_address(db: Session, address: schemas.AddressCreate, user_id: int):
+    db_address = models.Address(**address.dict(), owner_id=user_id)
+    db.add(db_address)
     db.commit()
-    db.refresh(db_endereco)
-    return db_endereco
+    db.refresh(db_address)
+    return db_address
 
 
 def delete_all_addresses(db: Session, user_id:int):
-    addresses = db.query(models.Endereco).filter(models.Endereco.owner_id == user_id).all()
+    addresses = db.query(models.Address).filter(models.Address.owner_id == user_id).all()
     for address in addresses:
         db.delete(address)
         db.commit()
@@ -67,9 +68,9 @@ def delete_user(db: Session, user_id:int):
 
     return db_user
 
-def update_endereco(db: Session, endereco: schemas.EnderecoCreate, owner_id: int, address_id: int):
-    db_endereco = models.Endereco(**endereco.dict(), owner_id=owner_id, id=address_id)
-    db.merge(db_endereco)
+def update_address(db: Session, address: schemas.AddressCreate, owner_id: int, address_id: int):
+    db_address = models.Address(**address.dict(), owner_id=owner_id, id=address_id)
+    db.merge(db_address)
     db.commit()
 
-    return db_endereco
+    return db_address

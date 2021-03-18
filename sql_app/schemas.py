@@ -3,23 +3,23 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class EnderecoBase(BaseModel):
+class AddressBase(BaseModel):
 
-    pais: str
-    estado: str
-    municipio: str
-    cep: str
-    rua: str
-    numero: int
-    complemento: Optional[str] = None
+    country: str
+    state: str
+    city: str
+    zip_code: str
+    street: str
+    number: int
+    complement: Optional[str] = None
 
 
-class EnderecoCreate(EnderecoBase):
+class AddressCreate(AddressBase):
 
     pass
 
 
-class Endereco(EnderecoBase):
+class Address(AddressBase):
     id: int
     owner_id: int
 
@@ -29,10 +29,9 @@ class Endereco(EnderecoBase):
 
 class UserBase(BaseModel):
 
-    email: str
     id: int
     email: str
-    nome: str
+    name: str
     cpf: str
     pis: str
 
@@ -45,7 +44,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
-    enderecos: List[Endereco] = []
+    addresses: List[Address] = []
 
     class Config:
         orm_mode = True
