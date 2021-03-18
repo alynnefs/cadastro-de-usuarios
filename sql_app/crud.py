@@ -66,3 +66,10 @@ def delete_user(db: Session, user_id:int):
     db.commit()
 
     return db_user
+
+def update_endereco(db: Session, endereco: schemas.EnderecoCreate, owner_id: int, address_id: int):
+    db_endereco = models.Endereco(**endereco.dict(), owner_id=owner_id, id=address_id)
+    db.merge(db_endereco)
+    db.commit()
+
+    return db_endereco
