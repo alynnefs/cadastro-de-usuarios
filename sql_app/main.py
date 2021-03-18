@@ -65,7 +65,15 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     return crud.delete_user(db=db, user_id=user_id)
 
-@app.put("/users/{user_id}/addresses/{address_id}", response_model=schemas.Address)
+@app.delete("/addresses/{address_id}/")
+def delete_address_by_id(address_id: int, db: Session = Depends(get_db)):
+    return crud.delete_address_by_id(db=db, address_id=address_id)
+
+@app.delete("/users/{user_id}/addresses/")
+def delete_all_addresses_by_id(user_id: int, db: Session = Depends(get_db)):
+    return crud.delete_all_addresses(db=db, user_id=user_id)
+
+@app.put("/users/{user_id}/addresses/{address_id}/", response_model=schemas.Address)
 def update_address(
     user_id: int, address_id: int, address: schemas.AddressCreate, db: Session = Depends(get_db)
 ):

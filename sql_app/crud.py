@@ -60,6 +60,14 @@ def delete_all_addresses(db: Session, user_id:int):
     return addresses
 
 
+def delete_address_by_id(db: Session, address_id:int):
+    db_address = db.query(models.Address).filter(models.Address.id == address_id).first()
+    db.delete(db_address)
+    db.commit()
+
+    return db_address
+
+
 def delete_user(db: Session, user_id:int):
     delete_all_addresses(db=db, user_id=user_id)
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
