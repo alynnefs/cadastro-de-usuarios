@@ -17,3 +17,6 @@ def is_email_valid(user_email: str):
     except EmailNotValidError as e:
         print(str(e))
         return False
+
+def remove_characters(data: str):
+    return data.replace(".", "").replace("-","")

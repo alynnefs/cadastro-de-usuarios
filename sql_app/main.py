@@ -24,9 +24,15 @@ def get_db():
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
+    db_user_email = crud.get_user_by_email(db, email=user.email)
+    db_user_cpf = crud.get_user_by_cpf(db, cpf=user.cpf)
+    db_user_pis = crud.get_user_by_pis(db, pis=user.pis)
+    if db_user_email:
         raise HTTPException(status_code=400, detail="Email already registered")
+    if db_user_cpf:
+        raise HTTPException(status_code=400, detail="CPF already registered")
+    if db_user_pis:
+        raise HTTPException(status_code=400, detail="PIS already registered")
     return crud.create_user(db=db, user=user)
 
 

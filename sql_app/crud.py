@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
+from .utils import is_cpf_valid, is_pis_valid, is_email_valid, remove_characters
 from . import models, schemas
 
 
@@ -12,6 +14,14 @@ def get_user_by_email(db: Session, email: str):
 
     return db.query(models.User).filter(models.User.email == email).first()
 
+def get_user_by_cpf(db: Session, cpf: str):
+
+    return db.query(models.User).filter(models.User.cpf == cpf).first()
+
+def get_user_by_pis(db: Session, pis: str):
+
+    return db.query(models.User).filter(models.User.pis == pis).first()
+
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
 
@@ -20,12 +30,21 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user: schemas.UserCreate):
     # TODO: hash password
+    if (not is_cpf_valid(user.cpf)):
+        raise HTTPException(status_code=400, detail="Invalid CPF")
+
+    if (not is_pis_valid(user.pis)):
+        raise HTTPException(status_code=400, detail="Invalid PIS")
+
+    if (not is_email_valid(user.email)):
+        raise HTTPException(status_code=400, detail="Invalid e-mail")
+
     fake_hashed_password = user.password + "notreallyhashed"
     db_user = models.User(
         email=user.email,
         name=user.name,
-        cpf=user.cpf,
-        pis=user.pis,
+        cpf=remove_characters(user.cpf),
+        pis=remove_characters(user.pis),
         hashed_password=fake_hashed_password
     )
     db.add(db_user)
