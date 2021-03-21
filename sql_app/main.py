@@ -1,25 +1,20 @@
+from datetime import datetime, timedelta
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
-from .database import SessionLocal, engine
+from .database import engine
+from .utils import get_db
+from .local_settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
-
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.post("/users/", response_model=schemas.User)
@@ -84,3 +79,29 @@ def update_address(
     user_id: int, address_id: int, address: schemas.AddressCreate, db: Session = Depends(get_db)
 ):
     return crud.update_address(db=db, address=address, owner_id=user_id, address_id=address_id)
+
+# Security
+@app.get("/items/")
+async def read_items(token: str = Depends(crud.oauth2_scheme)):
+    return {"token": token}
+
+@app.get("/users/me")
+def read_users_me(current_user: schemas.UserLogin = Depends(crud.get_current_user)):
+    return current_user
+
+@app.post("/token", response_model=schemas.Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = crud.authenticate_user(db, form_data.username, form_data.password)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect e-mail or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = crud.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}

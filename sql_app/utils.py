@@ -1,6 +1,16 @@
 from email_validator import validate_email, EmailNotValidError
 from validate_docbr import CPF, PIS
 
+from .database import SessionLocal
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 def is_cpf_valid(user_cpf: str):
     cpf = CPF()
     return cpf.validate(user_cpf)
