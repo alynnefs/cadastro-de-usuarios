@@ -126,7 +126,8 @@ def get_user_json(db: Session, email):
 
     return {
         "email": user.email,
-        "name": user.name
+        "name": user.name,
+        "message": f"Olá, {user.name}!"
     }
 
 def authenticate_user(db, username: str, password: str):
