@@ -9,7 +9,6 @@ class User(Base):
 
     __tablename__ = "users"
 
-
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
@@ -21,11 +20,9 @@ class User(Base):
     addresses = relationship("Address", back_populates="owner")
 
 
-
 class Address(Base):
 
     __tablename__ = "addresses"
-
 
     id = Column(Integer, primary_key=True, index=True)
     country = Column(String)

@@ -7,7 +7,12 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from .utils import is_cpf_valid, is_pis_valid, is_email_valid, remove_characters
+from .utils import (
+    is_cpf_valid,
+    is_pis_valid,
+    is_email_valid,
+    remove_characters
+)
 from .local_settings import ALGORITHM, SECRET_KEY
 from . import models, schemas
 from .utils import get_db
@@ -21,13 +26,16 @@ def get_user(db: Session, user_id: int):
 
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+
 def get_user_by_email(db: Session, email: str):
 
     return db.query(models.User).filter(models.User.email == email).first()
 
+
 def get_user_by_cpf(db: Session, cpf: str):
 
     return db.query(models.User).filter(models.User.cpf == cpf).first()
+
 
 def get_user_by_pis(db: Session, pis: str):
 
@@ -73,7 +81,9 @@ def get_address_by_id(db: Session, id: int):
     return db.query(models.Address).filter(models.Address.owner_id == id).all()
 
 
-def create_user_address(db: Session, address: schemas.AddressCreate, user_id: int):
+def create_user_address(
+    db: Session, address: schemas.AddressCreate, user_id: int
+):
     db_address = models.Address(**address.dict(), owner_id=user_id)
     db.add(db_address)
     db.commit()
@@ -81,23 +91,27 @@ def create_user_address(db: Session, address: schemas.AddressCreate, user_id: in
     return db_address
 
 
-def delete_all_addresses(db: Session, user_id:int):
-    addresses = db.query(models.Address).filter(models.Address.owner_id == user_id).all()
+def delete_all_addresses(db: Session, user_id: int):
+    addresses = db.query(models.Address).filter(
+        models.Address.owner_id == user_id
+    ).all()
     for address in addresses:
         db.delete(address)
         db.commit()
     return addresses
 
 
-def delete_address_by_id(db: Session, address_id:int):
-    db_address = db.query(models.Address).filter(models.Address.id == address_id).first()
+def delete_address_by_id(db: Session, address_id: int):
+    db_address = db.query(models.Address).filter(
+        models.Address.id == address_id
+    ).first()
     db.delete(db_address)
     db.commit()
 
     return db_address
 
 
-def delete_user(db: Session, user_id:int):
+def delete_user(db: Session, user_id: int):
     delete_all_addresses(db=db, user_id=user_id)
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     db.delete(db_user)
@@ -105,8 +119,13 @@ def delete_user(db: Session, user_id:int):
 
     return db_user
 
-def update_address(db: Session, address: schemas.AddressCreate, owner_id: int, address_id: int):
-    db_address = models.Address(**address.dict(), owner_id=owner_id, id=address_id)
+
+def update_address(
+    db: Session, address: schemas.AddressCreate, owner_id: int, address_id: int
+):
+    db_address = models.Address(
+        **address.dict(), owner_id=owner_id, id=address_id
+    )
     db.merge(db_address)
     db.commit()
 
@@ -121,6 +140,7 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+
 def get_user_json(db: Session, email):
     user = get_user_by_email(db, email)
 
@@ -129,6 +149,7 @@ def get_user_json(db: Session, email):
         "name": user.name,
         "message": f"Olá, {user.name}!"
     }
+
 
 def authenticate_user(db, username: str, password: str):
     user = get_user_by_email(db, email=username)
@@ -140,7 +161,9 @@ def authenticate_user(db, username: str, password: str):
     return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -162,10 +185,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 
-async def get_current_active_user(current_user: schemas.UserLogin = Depends(get_current_user)):
+async def get_current_active_user(
+    current_user: schemas.UserLogin = Depends(get_current_user)
+):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

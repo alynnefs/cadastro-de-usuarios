@@ -51,46 +51,73 @@ def create_address_for_user(
 ):
     return crud.create_user_address(db=db, address=address, user_id=user_id)
 
+
 @app.get("/users/{user_id}/addresses/")
 def read_address_by_id(
     user_id: int, db: Session = Depends(get_db)
 ):
     return crud.get_address_by_id(db=db, id=user_id)
 
+
 @app.get("/addresses/", response_model=List[schemas.Address])
-def read_addresses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_addresses(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     return crud.get_addresses(db, skip=skip, limit=limit)
+
 
 @app.delete("/users/{user_id}/")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     return crud.delete_user(db=db, user_id=user_id)
 
+
 @app.delete("/addresses/{address_id}/")
 def delete_address_by_id(address_id: int, db: Session = Depends(get_db)):
     return crud.delete_address_by_id(db=db, address_id=address_id)
+
 
 @app.delete("/users/{user_id}/addresses/")
 def delete_all_addresses_by_id(user_id: int, db: Session = Depends(get_db)):
     return crud.delete_all_addresses(db=db, user_id=user_id)
 
-@app.put("/users/{user_id}/addresses/{address_id}/", response_model=schemas.Address)
+
+@app.put(
+    "/users/{user_id}/addresses/{address_id}/",
+    response_model=schemas.Address
+)
 def update_address(
-    user_id: int, address_id: int, address: schemas.AddressCreate, db: Session = Depends(get_db)
+    user_id: int,
+    address_id: int,
+    address: schemas.AddressCreate,
+    db: Session = Depends(get_db)
 ):
-    return crud.update_address(db=db, address=address, owner_id=user_id, address_id=address_id)
+    return crud.update_address(
+        db=db,
+        address=address,
+        owner_id=user_id,
+        address_id=address_id
+    )
+
 
 # Security
 @app.get("/items/")
 async def read_items(token: str = Depends(crud.oauth2_scheme)):
     return {"token": token}
 
+
 @app.get("/users/me")
-def read_users_me(current_user: schemas.UserLogin = Depends(crud.get_current_user)):
+def read_users_me(
+    current_user: schemas.UserLogin = Depends(crud.get_current_user)
+):
     return current_user
 
+
 @app.post("/token", response_model=schemas.Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
     user = crud.authenticate_user(db, form_data.username, form_data.password)
 
     if not user:

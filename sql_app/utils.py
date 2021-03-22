@@ -3,6 +3,7 @@ from validate_docbr import CPF, PIS
 
 from .database import SessionLocal
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -11,13 +12,16 @@ def get_db():
     finally:
         db.close()
 
+
 def is_cpf_valid(user_cpf: str):
     cpf = CPF()
     return cpf.validate(user_cpf)
 
+
 def is_pis_valid(user_pis: str):
     pis = PIS()
     return pis.validate(user_pis)
+
 
 def is_email_valid(user_email: str):
     try:
@@ -28,5 +32,6 @@ def is_email_valid(user_email: str):
         print(str(e))
         return False
 
+
 def remove_characters(data: str):
-    return data.replace(".", "").replace("-","")
+    return data.replace(".", "").replace("-", "")

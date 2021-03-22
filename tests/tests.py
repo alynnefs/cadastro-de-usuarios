@@ -13,9 +13,15 @@ SQLALCHEMY_DATABASE_URL = "postgresql:///test_web_user"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
 )
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+TestingSessionLocal = sessionmaker(
+                      autocommit=False,
+                      autoflush=False,
+                      bind=engine
+                      )
 
 Base.metadata.create_all(bind=engine)
+
 
 def override_get_db():
     try:
@@ -23,6 +29,7 @@ def override_get_db():
         yield db
     finally:
         db.close()
+
 
 app.dependency_overrides[get_db] = override_get_db
 
@@ -53,7 +60,6 @@ class TestEndpoints(unittest.TestCase):
         assert "id" in data
         user_id = data["id"]
 
-
         response = client.get(f"/users/{user_id}")
         assert response.status_code == 200, response.text
         data = response.json()
@@ -62,7 +68,6 @@ class TestEndpoints(unittest.TestCase):
         assert data["name"] == "Deadpool"
         assert data["cpf"] == "43987702834"
         assert data["pis"] == "12090310016"
-
 
     def get_user_by_id(self):
         user_id = 1
