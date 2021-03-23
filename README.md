@@ -1,6 +1,6 @@
 # web-users
 
-Esse projeto consite em uma aplicação na web com cadastro de usuários. Os dados de cadastro estão na estrutura a seguir:
+Esse projeto consiste em uma aplicação na web com cadastro de usuários. Os dados de cadastro estão na estrutura a seguir:
 + nome
 + email
 + endereço do usuário
@@ -43,7 +43,22 @@ pip install -r requirements.txt
 ```
 + No PostgreSQL deve haver dois bancos: web_user e test_web_user. Um para a aplicação e outro para testes, respectivamente. Esses bancos de dados não precisam ter tabelas, eles só precisam existir.
 
-## Como popular o banco de dados
+## Como executar o projeto
+Com o ambiente virtual ativo, execute:
+```
+uvicorn backend.main:app --reload
+```
+Você pode acessar as rotas descritas no [main.py](https://github.com/alynnefs/web-users/blob/main/backend/main.py) pela barra de buscas ou usar o [Interactive API docs](http://127.0.0.1:8000/docs#/)
+
+## Como popular o banco de dados manualmente
+Para inserir dados pelo [Interactive API docs](http://127.0.0.1:8000/docs#/), siga os seguintes passos:
+- clicar em uma rota marcada como POST
+- clicar em `Try it out`
+- adicionar os campos desejados
+
+Obs: e-mail, CPF e PIS estão sendo validados. Para o POST funcionar, é necessário adicionar um domínio de e-mail válido. Para [CPF](https://theonegenerator.com/generators/documents/cpf-generator/) e [PIS](https://www.geradorpis.com/), você pode usar os geradores marcados como link. Não importa se a entrada tem ou não os caracteres padrão, eles serão removidos. Caso um desses campos já exista, o POST não será feito.
+
+## Como popular o banco de dados por script
 
 Para facilitar os testes iniciais, existe o arquivo [populate.sh](https://github.com/alynnefs/web-users/blob/main/backend/populate.sh). Caso ele não esteja com permissão de execução, basta executar
 
@@ -54,3 +69,16 @@ Para executá-lo e, consequentemente, adicionar valores ao banco de dados, basta
 ```./caminho/para/populate.sh```
 
 Este arquivo cria 2 usuários. O primeiro com 1 endereço e o segundo com 2.
+OBS: O backend deve estar rodando. 
+
+## Dificuldades encontradas
+- Quando o usuário está logado, um cookie é gerado. Entretanto ele se perde quando a página é atualizada. Não descobri a tempo como armazená-lo.
+- Adicionei uma mensagem para quando um usuário faz login, mas ao meu ver isso deveria acontecer no front. Caso exista usuário mostra o nome, caso não, mostra "visitante".
+- Até o momento não encontrei uma biblioteca de validação de CEP que funcione para todos os países.
+- Os testes estão com id hard coded, por dificuldade em pegar o id do usuário.
+
+## Próximos passos
+Além de resolver os mencionados em "dificuldades encontradas":
+- Colocar autorização nas rotas. O login existe e funciona, mas só está sendo usado na rota que pega o usuário atual (/users/me) e na rota que pega o token.
+- Adicionar docstrings e gerar documentação através delas.
+- Melhorar testes.
