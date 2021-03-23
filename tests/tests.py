@@ -4,9 +4,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from sql_app.database import Base
-from sql_app.main import app
-from sql_app.utils import get_db
+from backend.database import Base
+from backend.main import app
+from backend.utils import get_db
 
 SQLALCHEMY_DATABASE_URL = "postgresql:///test_web_user"
 
