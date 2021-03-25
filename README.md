@@ -50,7 +50,7 @@ openssl rand -hex 32
 
 ## Como popular o banco de dados por script
 
-Para facilitar os testes iniciais, existe o arquivo [populate.sh](https://github.com/alynnefs/web-users/blob/main/backend/populate.sh). Caso ele não esteja com permissão de execução, basta executar
+Para facilitar os testes iniciais, existe o arquivo [populate.sh](https://github.com/alynnefs/web-users/blob/main/backend/populate.sh). Caso ele não esteja com permissão de execução, basta rodar
 
 ```chmod +x caminho/para/populate.sh```
 
