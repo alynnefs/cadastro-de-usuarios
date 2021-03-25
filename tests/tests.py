@@ -5,11 +5,11 @@ from sqlalchemy.orm import sessionmaker
 from ..backend.database import Base
 from ..backend.main import app
 from ..backend.utils import get_db
+from ..backend.local_settings import SQLALCHEMY_TEST_DATABASE_URL
 
-SQLALCHEMY_DATABASE_URL = "postgresql:///test_web_user"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
+    SQLALCHEMY_TEST_DATABASE_URL
 )
 
 TestingSessionLocal = sessionmaker(
