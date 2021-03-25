@@ -43,7 +43,7 @@ source .env/bin/activate
 pip install -r requirements.txt
 ```
 + No PostgreSQL deve haver dois bancos: web_user e test_web_user. Um para a aplicação e outro para testes, respectivamente. Esses bancos de dados não precisam ter tabelas, eles só precisam existir.
-+ Algumas variáveis são declaradas no arquivo `local_settings.py`, que por motivos de segurança, está sendo ignorado pelo git. Ele é identico ao [local_settings.example.py](https://github.com/alynnefs/web-users/blob/main/backend/local_settings.example.py). É necessário apenas substituir a `SECRET_KEY`, colocando o resultado de
++ Algumas variáveis são declaradas no arquivo `local_settings.py`, que por motivos de segurança, está sendo ignorado pelo git. Ele é idêntico ao [local_settings.example.py](https://github.com/alynnefs/web-users/blob/main/backend/local_settings.example.py). É necessário apenas substituir a `SECRET_KEY`, colocando o resultado de
 ```
 openssl rand -hex 32
 ```
@@ -128,11 +128,11 @@ Obs: e-mail, CPF e PIS estão sendo validados. Para o POST funcionar, é necess�
 ```
 pytest tests/tests.py
 ```
-Obs: esses testes precisam ser melhor desenvolvidos e e necessário remover alguns hard codes.
+Obs: esses testes precisam ser melhor desenvolvidos e é necessário remover alguns hard codes.
 
 ## Dificuldades encontradas
 - Quando o usuário está logado, um cookie é gerado. Entretanto ele se perde quando a página é atualizada. Não descobri a tempo como armazená-lo.
-- Adicionei uma mensagem para quando um usuário faz login, mas ao meu ver isso deveria acontecer no front. Caso exista usuário mostra o nome, caso não, mostra "visitante".
+- Adicionei uma mensagem para quando um usuário faz login, mas ao meu ver isso deveria acontecer no front. Caso exista um usuário logado mostra o nome, caso não, mostra "visitante".
 - Até o momento não encontrei uma biblioteca de validação de CEP que funcione para todos os países.
 - Os testes estão com id hard coded, por dificuldade em pegar o id do usuário.
 
