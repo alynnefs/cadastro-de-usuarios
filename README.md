@@ -1,8 +1,9 @@
-# web-users
+# Cadastro de usuários
 
-Esse projeto consiste em uma aplicação na web com cadastro de usuários. Os dados de cadastro estão na estrutura a seguir:
+Esse projeto consiste em uma aplicação web para cadastro de usuários. Os dados de cadastro estão na estrutura a seguir:
+
 + nome
-+ email
++ e-mail
 + endereço do usuário
   - País
   - Estado
@@ -16,7 +17,7 @@ Esse projeto consiste em uma aplicação na web com cadastro de usuários. Os da
 + Senha
 
 ## Dependências Utilizadas
-+ Linux 18.04
++ Ubuntu 18.04
 + [Python 3.8.7](https://www.python.org/)
 + [PostgreSQL 13.2](https://www.postgresql.org/)
 + [jq](https://stedolan.github.io/jq/download/)
@@ -26,7 +27,7 @@ Esse projeto consiste em uma aplicação na web com cadastro de usuários. Os da
 + outras bibliotecas podem ser encontrada no arquivo [requirements.txt](https://github.com/alynnefs/web-users/blob/main/requirements.txt)
 
 
-## Criação do ambiente e Execução
+## Criação do ambiente
 
 Na raiz do projeto:
 + Criar o ambiente virtual usando
@@ -42,22 +43,10 @@ source .env/bin/activate
 pip install -r requirements.txt
 ```
 + No PostgreSQL deve haver dois bancos: web_user e test_web_user. Um para a aplicação e outro para testes, respectivamente. Esses bancos de dados não precisam ter tabelas, eles só precisam existir.
-+ Algumas variáveis são declaradas no arquivo `local_settings.py`, que por motivos de segurança, está sendo ignorado pelo git. Ele é identico ao [local_settings.py](https://github.com/alynnefs/web-users/blob/main/backend/local_settings.example.py). É necessário apenas substituir a `SECRET_KEY`, colocando o resultado de `openssl rand -hex 32`.
-
-## Como executar o projeto
-Com o ambiente virtual ativo, execute:
++ Algumas variáveis são declaradas no arquivo `local_settings.py`, que por motivos de segurança, está sendo ignorado pelo git. Ele é identico ao [local_settings.example.py](https://github.com/alynnefs/web-users/blob/main/backend/local_settings.example.py). É necessário apenas substituir a `SECRET_KEY`, colocando o resultado de
 ```
-uvicorn backend.main:app --reload
+openssl rand -hex 32
 ```
-Você pode acessar as rotas descritas no [main.py](https://github.com/alynnefs/web-users/blob/main/backend/main.py) pela barra de buscas ou usar o [Interactive API docs](http://127.0.0.1:8000/docs#/)
-
-## Como popular o banco de dados manualmente
-Para inserir dados pelo [Interactive API docs](http://127.0.0.1:8000/docs#/), siga os seguintes passos:
-- clicar em uma rota marcada como POST
-- clicar em `Try it out`
-- adicionar os campos desejados
-
-Obs: e-mail, CPF e PIS estão sendo validados. Para o POST funcionar, é necessário adicionar um domínio de e-mail válido. Para [CPF](https://theonegenerator.com/generators/documents/cpf-generator/) e [PIS](https://www.geradorpis.com/), você pode usar os geradores marcados como link. Não importa se a entrada tem ou não os caracteres padrão, eles serão removidos. Caso um desses campos já exista, o POST não será feito.
 
 ## Como popular o banco de dados por script
 
@@ -71,6 +60,68 @@ Para executá-lo e, consequentemente, adicionar valores ao banco de dados, basta
 
 Este arquivo cria 2 usuários. O primeiro com 1 endereço e o segundo com 2.
 OBS: O backend deve estar rodando. 
+
+
+## Como executar o projeto
+Com o ambiente virtual ativo, execute:
+```
+uvicorn backend.main:app --reload
+```
+Você pode acessar as rotas descritas no [main.py](https://github.com/alynnefs/web-users/blob/main/backend/main.py) pela barra de buscas ou usar o [Interactive API docs](http://127.0.0.1:8000/docs#/)
+
+## Como popular o banco de dados manualmente
+
+Para inserir dados pelo [Interactive API docs](http://127.0.0.1:8000/docs#/), siga os seguintes passos:
+
+Com o projeto executando, vá para a página
+```
+http://127.0.0.1:8000/docs#/
+```
+Ao clicar em qualquer uma das rotas, aparecerão alguns campos. Para adicionar valores, basta clicar em `Try it out`. Depois de modificar os valores, é só clicar em `Execute`. Nas respostas você verá o curl utilizado, o código de status e outras informações. Esse curl pode ser modificado e enviado diretamente pelo terminal, mudando os valores que devem ser únicos.
+
+No começo da página e em algumas rotas existe um botão chamado `Authorize`. Ao clicar, aparecerá uma tela de login. Preencha com usuário e senha já cadastrados e clique em `Authorize`. Enquanto o usuário estiver logado, o cadeado do botão aparecerá "trancado".
+
+`GET /users/`
+Retorna todos os usuários. É preciso verificar necessidade. No momento seria para administradores ou equivalente, dependendo da regra de negócio.
+
+`POST /users/`
+Adiciona um usuário
+
+`GET /users/{user_id}/`
+Retorna o usuário de acordo com o id
+
+`DELETE ​/users​/{user_id}​/`
+Apaga o usuário de acordo com o id
+
+`GET /users​/{user_id}​/addresses​/`
+Retorna os endereços de acordo com o id o usuário
+
+`POST ​/users​/{user_id}​/addresses​/`
+Adiciona um endereço para o usuário do id especificado
+
+`DELETE ​/users​/{user_id}​/addresses​/`
+Apaga todos os endereços de um usuário. Só é usado quando apaga o usuário
+
+`GET ​/addresses​/`
+Retorna todos os endereços de todos os usuários. É preciso verificar necessidade. No momento seria para administradores ou equivalente, dependendo da regra de negócio.
+
+`DELETE ​/addresses​/{address_id}​/`
+Apaga o endereço de acordo com o id
+
+`PUT ​/users​/{user_id}​/addresses​/{address_id}​/`
+Modifica o endereço de um usuário
+
+`GET ​/items​/`
+Retorna o token
+
+`GET ​/users​/me`
+Retorna o usuário atual
+
+`POST ​/token`
+Cria o token de acesso
+
+
+Obs: e-mail, CPF e PIS estão sendo validados. Para o POST funcionar, é necessário adicionar um domínio de e-mail válido. Para [CPF](https://theonegenerator.com/generators/documents/cpf-generator/) e [PIS](https://www.geradorpis.com/), você pode usar os geradores marcados como link. Não importa se a entrada tem ou não os caracteres padrão, eles serão removidos. Caso um desses campos já exista, o POST não será feito.
 
 ## Como rodar os testes
 - na raiz do projeto e com o ambiente virtual ativo, execute
