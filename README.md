@@ -42,6 +42,7 @@ source .env/bin/activate
 pip install -r requirements.txt
 ```
 + No PostgreSQL deve haver dois bancos: web_user e test_web_user. Um para a aplicação e outro para testes, respectivamente. Esses bancos de dados não precisam ter tabelas, eles só precisam existir.
++ Algumas variáveis são declaradas no arquivo `local_settings.py`, que por motivos de segurança, está sendo ignorado pelo git. Ele é identico ao [local_settings.py](https://github.com/alynnefs/web-users/blob/main/backend/local_settings.example.py). É necessário apenas substituir a `SECRET_KEY`, colocando o resultado de `openssl rand -hex 32`.
 
 ## Como executar o projeto
 Com o ambiente virtual ativo, execute:
@@ -70,6 +71,13 @@ Para executá-lo e, consequentemente, adicionar valores ao banco de dados, basta
 
 Este arquivo cria 2 usuários. O primeiro com 1 endereço e o segundo com 2.
 OBS: O backend deve estar rodando. 
+
+## Como rodar os testes
+- na raiz do projeto e com o ambiente virtual ativo, execute
+```
+pytest tests/tests.py
+```
+Obs: esses testes precisam ser melhor desenvolvidos e e necessário remover alguns hard codes.
 
 ## Dificuldades encontradas
 - Quando o usuário está logado, um cookie é gerado. Entretanto ele se perde quando a página é atualizada. Não descobri a tempo como armazená-lo.
